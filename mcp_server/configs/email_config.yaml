@@ -1,0 +1,7 @@
+server_type: email
+smtp:
+  use_tls: true
+  timeout: 30
+templates:
+  ceo_briefing: src/templates/ceo_briefing_email.html.j2
+simulated_mode: true  # Enable for testing

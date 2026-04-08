@@ -1,0 +1,5 @@
+server_type: reporting
+templates:
+  ceo_briefing: src/templates/ceo_briefing.md.j2
+output_directory: Reports/CEO_Briefings/
+simulated_mode: true  # Enable for testing

@@ -1,0 +1,151 @@
+version: '3.8'
+
+services:
+  # AI Employee Application
+  ai-employee:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-employee-app
+    environment:
+
+      # Facebook Configuration
+      FB_ACCESS_TOKEN: ${FB_ACCESS_TOKEN}
+      FB_PAGE_ID: ${FB_PAGE_ID}
+
+      # Instagram Configuration
+      IG_ACCESS_TOKEN: ${IG_ACCESS_TOKEN}
+      IG_ACCOUNT_ID: ${IG_ACCOUNT_ID}
+
+      # Twitter Configuration
+      TWITTER_API_KEY: ${TWITTER_API_KEY}
+      TWITTER_API_SECRET: ${TWITTER_API_SECRET}
+      TWITTER_ACCESS_TOKEN: ${TWITTER_ACCESS_TOKEN}
+      TWITTER_ACCESS_TOKEN_SECRET: ${TWITTER_ACCESS_TOKEN_SECRET}
+
+      # Email Configuration
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      CEO_EMAIL: ${CEO_EMAIL}
+
+      # Risk Engine Configuration
+      RISK_HIGH_THRESHOLD: ${RISK_HIGH_THRESHOLD:-0.7}
+      RISK_MEDIUM_THRESHOLD: ${RISK_MEDIUM_THRESHOLD:-0.4}
+      MAX_RETRIES: ${MAX_RETRIES:-3}
+      CIRCUIT_BREAKER_THRESHOLD: ${CIRCUIT_BREAKER_THRESHOLD:-5}
+      CIRCUIT_BREAKER_TIMEOUT: ${CIRCUIT_BREAKER_TIMEOUT:-300}
+
+      # Autonomous Loop Configuration
+      ENABLE_AUTONOMOUS_LOOP: ${ENABLE_AUTONOMOUS_LOOP:-false}
+      LOOP_INTERVAL_SECONDS: ${LOOP_INTERVAL_SECONDS:-60}
+      CEO_BRIEFING_DAY: ${CEO_BRIEFING_DAY:-monday}
+      CEO_BRIEFING_HOUR: ${CEO_BRIEFING_HOUR:-8}
+
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+
+    volumes:
+      # Mount vault directories
+      - ./Inbox:/app/Inbox
+      - ./Needs_Action:/app/Needs_Action
+      - ./Plans:/app/Plans
+      - ./Pending_Approval:/app/Pending_Approval
+      - ./Approved:/app/Approved
+      - ./Done:/app/Done
+      - ./Rejected:/app/Rejected
+      - ./Audit_Logs:/app/Audit_Logs
+      - ./Reports:/app/Reports
+      - ./mcp_server:/app/mcp_server
+
+      # Mount source code for development (comment out for production)
+      - ./src:/app/src
+
+    networks:
+      - ai-employee-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import sys; sys.exit(0)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis (optional - for caching and rate limiting)
+  redis:
+    image: redis:7-alpine
+    container_name: ai-employee-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - ai-employee-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: redis-server --appendonly yes
+
+  # PostgreSQL Database for Odoo
+  postgres:
+    image: postgres:15
+    container_name: odoo-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-odoo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-odoo}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - ai-employee-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ODOO_DB_USER:-odoo}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Odoo 19 ERP System
+  odoo:
+    image: odoo:19.0
+    container_name: odoo-erp
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      HOST: postgres
+      USER: ${POSTGRES_USER:-odoo}
+      PASSWORD: ${POSTGRES_PASSWORD:-odoo}
+      PORT: 5432
+    ports:
+      - "8069:8069"
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./odoo-config:/etc/odoo
+      - ./odoo-addons:/mnt/extra-addons
+    networks:
+      - ai-employee-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8069/web/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  ai-employee-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+    driver: local
+  postgres-data:
+    driver: local
+  odoo-web-data:
+    driver: local

@@ -1,183 +1,259 @@
-# Silver Tier AI Employee - Quick Start Guide
+# Gold Tier Autonomous Employee - Quick Start Guide
 
-## Prerequisites
+## 🎉 Congratulations! Your Autonomous Employee is Ready
 
-- Python 3.12+
-- Gmail account with App Password
-- Facebook Page with access token
-- Git (optional)
-
-## Installation
-
-1. **Clone/Navigate to project:**
-```bash
-cd E:\AI_Employee_Vault
-```
-
-2. **Install dependencies:**
-```bash
-pip install -r requirements.txt
-```
-
-3. **Configure environment:**
-Edit `.env` file with your credentials:
-```
-EMAIL_ADDRESS=your-email@gmail.com
-EMAIL_PASSWORD=your-app-password
-FACEBOOK_PAGE_ID=your-page-id
-FACEBOOK_PAGE_ACCESS_TOKEN=your-token
-```
-
-## Running the System
-
-### Single Execution
-```bash
-python reasoning_loop/main.py
-```
-
-### Continuous Mode (with watcher)
-```bash
-python run_reasoning_loop.bat
-```
-
-## Testing the System
-
-### Test 1: Send Email
-
-1. **Create task file:** `Needs_Action/test-email.md`
-```markdown
----
-id: test-email
-title: Test Email
-priority: P1
-source: manual
-status: needs_action
-tags: [email]
----
-
-# Task: Test Email
-
-Send a test email.
-
-**Email Details:**
-- To: mehakakram089@gmail.com
-- Subject: Test from AI Employee
-- Body:
-
-This is a test email from the Silver Tier AI Employee system.
-```
-
-2. **Run reasoning loop:**
-```bash
-python reasoning_loop/main.py
-```
-
-3. **Approve the plan:**
-```bash
-mv Pending_Approval/test-email.md Approved/
-```
-
-4. **Add approval timestamp:**
-Edit `Approved/test-email.md` and add to frontmatter:
-```yaml
-approved_at: '2026-02-24T22:00:00Z'
-```
-
-5. **Execute:**
-```bash
-python reasoning_loop/main.py
-```
-
-6. **Verify:**
-- Check `Done/` folder for completed plan
-- Check your email inbox
-
-### Test 2: Post to Facebook
-
-1. **Create task file:** `Needs_Action/test-facebook.md`
-```markdown
----
-id: test-facebook
-title: Test Facebook Post
-priority: P2
-source: manual
-status: needs_action
-tags: [facebook]
----
-
-# Task: Test Facebook Post
-
-Post a test message to Facebook.
-
-**Post Details:**
-- Message: Testing the Silver Tier AI Employee system! 🚀
-- Link: https://example.com
-- Published: true
-```
-
-2. **Follow same approval workflow as email test**
-
-3. **Verify:**
-- Check `Done/` folder
-- Check your Facebook page
-
-## Folder Structure
-
-```
-Needs_Action/     # New tasks go here
-Pending_Approval/ # Plans awaiting human approval
-Approved/         # Approved plans ready for execution
-Done/             # Completed plans
-Plans/            # File-only operations (auto-execute)
-```
-
-## Workflow
-
-1. **Create Task** → Place in `Needs_Action/`
-2. **Generate Plan** → Reasoning loop creates plan
-3. **Route Plan** → External actions → `Pending_Approval/`
-4. **Human Review** → Review plan details
-5. **Approve** → Move to `Approved/` + add timestamp
-6. **Execute** → Reasoning loop executes
-7. **Complete** → Plan moves to `Done/`
-
-## Troubleshooting
-
-### Email not sending
-- Check Gmail App Password
-- Verify SMTP settings in `.env`
-- Check logs in `logs/` folder
-
-### Facebook not posting
-- Verify Page Access Token is valid
-- Check Page ID matches your page
-- Ensure token has `pages_manage_posts` permission
-
-### Plan not executing
-- Verify `approved_at` timestamp exists in frontmatter
-- Check plan is in `Approved/` folder
-- Review logs for errors
-
-## Rate Limits
-
-- **Email:** 10 per hour
-- **Facebook:** 5 per hour
-
-Limits reset every hour.
-
-## Logs
-
-All logs stored in `logs/` folder:
-- `reasoning-loop.log` - Main loop activity
-- `mcp-server.log` - MCP server activity
-
-## Support
-
-For issues or questions:
-1. Check logs in `logs/` folder
-2. Review `SILVER_TIER_COMPLETION_REPORT.md`
-3. Check task file format matches examples
+You've successfully built a fully autonomous AI employee that can:
+- Monitor tasks automatically
+- Create customers in Odoo CRM
+- Create leads and opportunities
+- Assess risk before taking action
+- Log all activities for audit
 
 ---
 
-**Ready to test!** 🚀
+## 🚀 How to Start
+
+### Method 1: Windows Batch File (Easiest)
+```
+Double-click: start_autonomous_loop.bat
+```
+
+### Method 2: Command Line
+```bash
+python orchestrator/autonomous_loop.py
+```
+
+---
+
+## 📝 How to Use
+
+### 1. Create a Task File
+
+Drop a JSON file in the `Inbox/` folder:
+
+**Example: Create Customer**
+```json
+{
+  "type": "odoo",
+  "content": "Create customer Jane Doe with email jane@example.com",
+  "customer_name": "Jane Doe",
+  "customer_email": "jane@example.com",
+  "customer_phone": "+1234567890"
+}
+```
+
+**Example: Create Lead**
+```json
+{
+  "type": "odoo",
+  "content": "Create lead for Product Demo Request",
+  "lead_title": "Product Demo Request",
+  "customer_email": "demo@example.com",
+  "description": "Customer interested in product demo"
+}
+```
+
+### 2. Watch It Process
+
+The autonomous loop will:
+1. **Scan Inbox/** every 60 seconds
+2. **Classify** the task (email, social, odoo, general)
+3. **Assess risk** (low, medium, high)
+4. **Route** to appropriate folder:
+   - Low/Medium risk → `Needs_Action/`
+   - High risk → `Pending_Approval/`
+5. **Execute** tasks from `Needs_Action/`
+6. **Move** completed tasks to `Done/`
+
+### 3. Check Results
+
+- **Odoo Dashboard**: http://localhost:8069
+- **Audit Logs**: `Audit_Logs/` folder
+- **Completed Tasks**: `Done/` folder
+
+---
+
+## 📂 Folder Structure
+
+```
+Inbox/              ← Drop new tasks here
+Needs_Action/       ← Tasks ready to execute
+Pending_Approval/   ← High-risk tasks waiting for approval
+Done/               ← Completed tasks
+Rejected/           ← Rejected tasks
+Audit_Logs/         ← All activity logs
+```
+
+---
+
+## ⚙️ Configuration
+
+Edit `.env` file:
+
+```bash
+# Enable/disable autonomous mode
+ENABLE_AUTONOMOUS_LOOP=true
+
+# How often to check for new tasks (seconds)
+LOOP_INTERVAL_SECONDS=60
+
+# Odoo connection
+ODOO_URL=http://localhost:8069
+ODOO_DB=odoo_db
+ODOO_USERNAME=mehakakram128@gmail.com
+ODOO_PASSWORD=odoo
+```
+
+---
+
+## 🛡️ Safety Features
+
+### Risk Assessment
+- **Low Risk**: Auto-executed (logging, reading data)
+- **Medium Risk**: Auto-executed with audit (creating customers, sending emails)
+- **High Risk**: Requires approval (financial transactions, deletions)
+
+### Kill Switch
+To emergency stop all operations:
+```python
+from src.kill_switch_simple import KillSwitch
+kill_switch = KillSwitch()
+kill_switch.activate("Emergency stop reason")
+```
+
+### Audit Trail
+Every action is logged to `Audit_Logs/` with:
+- Timestamp
+- Action type
+- Risk level
+- Result
+- Details
+
+---
+
+## 🧪 Testing
+
+Run the test suite:
+```bash
+python test_autonomous_loop.py
+```
+
+This will:
+- Create sample tasks
+- Process them through the system
+- Verify Odoo integration works
+- Show you the complete workflow
+
+---
+
+## 📊 What Happens Next
+
+### Automatic Processing Flow
+
+```
+1. Task arrives in Inbox/
+   ↓
+2. Task Processor scans and classifies
+   ↓
+3. Risk Engine assesses safety
+   ↓
+4. Task routed to Needs_Action/ or Pending_Approval/
+   ↓
+5. Decision Engine creates execution plan
+   ↓
+6. Actions executed (Odoo, email, social media)
+   ↓
+7. Results logged to Audit_Logs/
+   ↓
+8. Task moved to Done/
+```
+
+---
+
+## 🎯 Real-World Examples
+
+### Example 1: Customer Inquiry from Website
+1. Website form submission → Creates JSON in Inbox/
+2. System creates customer in Odoo
+3. System creates lead/opportunity
+4. Sales team sees it in Odoo CRM dashboard
+
+### Example 2: Social Media Mention
+1. Social media monitoring detects mention
+2. Creates task in Inbox/
+3. System creates lead in Odoo
+4. Optionally sends auto-response
+
+### Example 3: Email Request
+1. Email arrives with customer request
+2. Parsed into task JSON
+3. System creates customer + lead
+4. Sends confirmation email
+
+---
+
+## 🔧 Troubleshooting
+
+### Loop Not Starting
+- Check: `ENABLE_AUTONOMOUS_LOOP=true` in .env
+- Check: Odoo is running (`docker ps`)
+- Check: No kill switch active
+
+### Tasks Not Processing
+- Check: Files are in `Inbox/` folder
+- Check: Files are valid JSON
+- Check: Audit logs for errors
+
+### Odoo Connection Failed
+- Check: Odoo running at http://localhost:8069
+- Check: Credentials in .env are correct
+- Test: `python test_odoo_connection.py`
+
+---
+
+## 📈 Next Steps (Optional Enhancements)
+
+### Phase 2: Advanced Features
+1. ✅ **Email Integration** - Process incoming emails automatically (COMPLETED)
+   - IMAP monitoring for new emails
+   - Auto-response generation based on inquiry type
+   - Customer and lead creation from email inquiries
+2. ✅ **Social Media Integration** - Monitor and respond to social media (COMPLETED)
+   - Facebook page monitoring and posting
+   - Twitter/X monitoring and posting
+   - Instagram monitoring and posting
+   - Automatic lead creation from mentions
+3. **CEO Briefing System** - Weekly automated reports
+4. **Advanced Risk Rules** - Custom risk assessment logic
+5. **Approval Workflows** - Web UI for approving high-risk tasks
+
+### Phase 3: Production Deployment
+1. Run as Windows Service (always on)
+2. Add monitoring and alerting
+3. Implement backup and recovery
+4. Scale with multiple workers
+
+---
+
+## ✅ Success Checklist
+
+- [x] Odoo 19 installed and running
+- [x] Autonomous loop tested and working
+- [x] Sample tasks processed successfully
+- [x] Audit logging functional
+- [x] Risk assessment working
+- [x] Odoo integration verified
+- [x] Email auto-response integration complete
+- [x] Social media monitoring integration complete
+
+**You're ready to go! 🚀**
+
+Drop a task in `Inbox/` and watch your autonomous employee work!
+
+---
+
+## 📚 Additional Documentation
+
+- **INTEGRATION_GUIDE.md** - Detailed setup for email and social media
+- **CLAUDE.md** - Project instructions and guidelines
+- **Audit_Logs/** - All system activity logs

@@ -67,6 +67,19 @@ Rejected/*.md
 # MCP Server logs
 mcp_server/logs/*.log
 
+# Audit logs (keep structure but ignore content)
+Audit_Logs/*.jsonl
+Audit_Logs/*.json
+Audit_Logs/*.log
+
+# Reports (keep structure but ignore generated reports)
+Reports/**/*.md
+Reports/**/*.html
+Reports/**/*.pdf
+
+# Briefings (keep structure but ignore generated briefings)
+Briefings/*.md
+
 # Keep folder structure
 !Inbox/.gitkeep
 !Needs_Action/.gitkeep
@@ -75,3 +88,6 @@ mcp_server/logs/*.log
 !Pending_Approval/.gitkeep
 !Approved/.gitkeep
 !Rejected/.gitkeep
+!Audit_Logs/.gitkeep
+!Reports/.gitkeep
+!Briefings/.gitkeep

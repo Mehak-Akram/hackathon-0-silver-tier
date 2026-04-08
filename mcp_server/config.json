@@ -1,7 +1,7 @@
 {
-  "server_name": "silver_tier_mcp",
+  "server_name": "gold_tier_mcp",
   "version": "1.0.0",
-  "enabled_functions": ["send_email", "post_facebook_page"],
+  "enabled_functions": ["send_email", "post_facebook_page", "post_twitter", "post_instagram", "generate_ceo_briefing", "odoo_create_customer", "odoo_create_lead", "odoo_search_customer", "odoo_get_invoices"],
   "email_config": {
     "smtp_host": "${SMTP_HOST}",
     "smtp_port": "${SMTP_PORT}",
@@ -16,7 +16,10 @@
   },
   "rate_limits": {
     "email_per_hour": 50,
-    "facebook_per_hour": 25
+    "facebook_per_hour": 25,
+    "twitter_per_hour": 30,
+    "instagram_per_hour": 20,
+    "reporting_per_hour": 10
   },
   "logging": {
     "log_level": "${LOG_LEVEL}",
