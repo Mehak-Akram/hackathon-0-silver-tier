@@ -218,6 +218,8 @@ LOOP_INTERVAL_SECONDS=60
 ```
 
 ### 4. Start System
+
+**Development Mode:**
 ```bash
 # Windows
 start_autonomous_loop.bat
@@ -226,10 +228,23 @@ start_autonomous_loop.bat
 python orchestrator/autonomous_loop.py
 ```
 
+**Production Mode (Windows Service):**
+```bash
+# Install service (as Administrator)
+install_service.bat
+
+# Start service
+net start GoldTierEmployee
+
+# View dashboard
+http://localhost:8080/
+```
+
 ### 5. Monitor Activity
 Watch console output and check:
 - `Audit_Logs/audit_log_YYYYMMDD.json`
 - `Done/` folder for completed tasks
+- Health dashboard: http://localhost:8080/
 
 ---
 

@@ -23,6 +23,14 @@ from orchestrator.social_media_monitor import SocialMediaMonitor
 from src.audit_logger_simple import AuditLogger
 from src.kill_switch_simple import KillSwitch
 
+# Import health monitoring (optional)
+try:
+    from deployment.health_monitor import HealthMonitor, HealthCheckServer
+    from deployment.alert_manager import AlertManager
+    HEALTH_MONITOR_AVAILABLE = True
+except ImportError:
+    HEALTH_MONITOR_AVAILABLE = False
+
 
 class AutonomousLoop:
     """
@@ -66,6 +74,23 @@ class AutonomousLoop:
             )
             self.social_media_monitor = None
 
+        # Initialize health monitor (optional)
+        self.health_monitor = None
+        self.health_server = None
+        self.alert_manager = None
+        if HEALTH_MONITOR_AVAILABLE:
+            try:
+                health_port = int(os.getenv('HEALTH_CHECK_PORT', '8080'))
+                self.health_monitor = HealthMonitor()
+                self.health_server = HealthCheckServer(self.health_monitor, port=health_port)
+                self.alert_manager = AlertManager()
+            except Exception as e:
+                self.audit_logger.log_event(
+                    event_type='health_monitor_init_error',
+                    details={'error': str(e)},
+                    severity='warning'
+                )
+
         # Setup signal handlers for graceful shutdown
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
@@ -76,7 +101,8 @@ class AutonomousLoop:
                 'enabled': self.enabled,
                 'interval_seconds': self.loop_interval,
                 'email_monitor_enabled': self.email_monitor is not None,
-                'social_media_monitor_enabled': self.social_media_monitor is not None
+                'social_media_monitor_enabled': self.social_media_monitor is not None,
+                'health_monitor_enabled': self.health_monitor is not None
             },
             severity='info'
         )
@@ -240,6 +266,10 @@ class AutonomousLoop:
         iteration_duration = (datetime.now() - iteration_start).total_seconds()
         stats['duration_seconds'] = iteration_duration
 
+        # Update health monitor if available
+        if self.health_monitor:
+            self.health_monitor.update_iteration(stats)
+
         return stats
 
     def start(self):
@@ -256,12 +286,19 @@ class AutonomousLoop:
         self.running = True
 
         print("="*60)
-        print("🤖 AUTONOMOUS LOOP STARTED (Ralph Wiggum Mode)")
+        print("AUTONOMOUS LOOP STARTED (Ralph Wiggum Mode)")
         print("="*60)
         print(f"Interval: {self.loop_interval} seconds")
         print(f"Monitoring: Inbox/ and Needs_Action/")
         print(f"Press Ctrl+C to stop gracefully")
         print("="*60)
+
+        # Start health check server if available
+        if self.health_server:
+            try:
+                self.health_server.start()
+            except Exception as e:
+                print(f"[WARNING] Failed to start health server: {e}")
 
         self.audit_logger.log_event(
             event_type='autonomous_loop_started',
@@ -300,8 +337,16 @@ class AutonomousLoop:
                 if stats['errors'] > 0:
                     print(f"  [Warning] {stats['errors']} errors occurred")
 
+                # Periodic health check and alerting (every 10 iterations)
+                if self.health_monitor and self.alert_manager and iteration_count % 10 == 0:
+                    try:
+                        health_status = self.health_monitor.get_health_status()
+                        self.alert_manager.check_health_and_alert(health_status)
+                    except Exception as e:
+                        print(f"  [Warning] Health check failed: {e}")
+
                 # Sleep until next iteration
-                print(f"  • Sleeping for {self.loop_interval} seconds...")
+                print(f"  [Status] Sleeping for {self.loop_interval} seconds...")
                 time.sleep(self.loop_interval)
 
             except KeyboardInterrupt:
@@ -327,8 +372,15 @@ class AutonomousLoop:
         self.running = False
 
         print("\n" + "="*60)
-        print("🛑 AUTONOMOUS LOOP STOPPED")
+        print("AUTONOMOUS LOOP STOPPED")
         print("="*60)
+
+        # Stop health check server if running
+        if self.health_server:
+            try:
+                self.health_server.stop()
+            except Exception as e:
+                print(f"[WARNING] Error stopping health server: {e}")
 
         self.audit_logger.log_event(
             event_type='autonomous_loop_stopped',
