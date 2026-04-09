@@ -1,0 +1,97 @@
+{
+  "current": {
+    "period": {
+      "start": "2026-04-02T15:15:05.011603",
+      "end": "2026-04-09T15:15:05.011603",
+      "days": 7
+    },
+    "system": {
+      "total_iterations": 0,
+      "uptime_hours": 0,
+      "average_iteration_time": 0,
+      "health_status": "unknown"
+    },
+    "tasks": {
+      "total_processed": 0,
+      "total_executed": 11,
+      "by_type": {
+        "email_inquiry": 3,
+        "social_media_mention": 2,
+        "odoo": 4,
+        "general": 2
+      },
+      "success_rate": 0
+    },
+    "odoo": {
+      "customers_created": 0,
+      "leads_created": 0,
+      "opportunities_value": 0,
+      "available": true
+    },
+    "email": {
+      "emails_received": 3,
+      "emails_responded": 0,
+      "response_rate": 0.0
+    },
+    "social_media": {
+      "mentions_detected": 2,
+      "by_platform": {
+        "facebook": 2
+      },
+      "leads_generated": 2
+    },
+    "errors": {
+      "total_errors": 0,
+      "critical_errors": 0,
+      "warnings": 0,
+      "by_type": {}
+    }
+  },
+  "previous": {
+    "period": {
+      "start": "2026-03-26T15:15:05.011603",
+      "end": "2026-04-02T15:15:05.011603",
+      "days": 7
+    },
+    "system": {
+      "total_iterations": 0,
+      "uptime_hours": 0,
+      "average_iteration_time": 0,
+      "health_status": "unknown"
+    },
+    "tasks": {
+      "total_processed": 0,
+      "total_executed": 0,
+      "by_type": {},
+      "success_rate": 0
+    },
+    "odoo": {
+      "customers_created": 0,
+      "leads_created": 0,
+      "opportunities_value": 0,
+      "available": true
+    },
+    "email": {
+      "emails_received": 0,
+      "emails_responded": 0,
+      "response_rate": 0
+    },
+    "social_media": {
+      "mentions_detected": 0,
+      "by_platform": {},
+      "leads_generated": 0
+    },
+    "errors": {
+      "total_errors": 0,
+      "critical_errors": 0,
+      "warnings": 0,
+      "by_type": {}
+    }
+  },
+  "changes": {
+    "tasks_change": 100,
+    "customers_change": 0,
+    "leads_change": 0,
+    "errors_change": 0
+  }
+}
