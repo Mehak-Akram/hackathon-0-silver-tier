@@ -91,3 +91,7 @@ Briefings/*.md
 !Audit_Logs/.gitkeep
 !Reports/.gitkeep
 !Briefings/.gitkeep
+
+Done/
+logs/
+Audit_Logs/
