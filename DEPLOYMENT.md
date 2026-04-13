@@ -2,6 +2,8 @@
 
 Complete guide for deploying Gold Tier Autonomous Employee as a production Windows service.
 
+> **⚠️ Important**: This guide describes the intended production deployment process. Ensure you thoroughly test all components in a development environment before deploying to production. Some features may require additional configuration or troubleshooting based on your specific environment.
+
 ---
 
 ## Overview
@@ -91,15 +93,15 @@ FACEBOOK_PAGE_ID=
 FACEBOOK_ACCESS_TOKEN=
 
 TWITTER_MONITORING_ENABLED=false
-TWITTER_BEARER_TOKEN=
-TWITTER_API_KEY=
-TWITTER_API_SECRET=
-TWITTER_ACCESS_TOKEN=
-TWITTER_ACCESS_TOKEN_SECRET=
+TWITTER_BEARER_TOKEN=your-bearer-token
+TWITTER_API_KEY=your-api-key
+TWITTER_API_SECRET=your-api-secret
+TWITTER_ACCESS_TOKEN=your-access-token
+TWITTER_ACCESS_TOKEN_SECRET=your-access-token-secret
 
 INSTAGRAM_MONITORING_ENABLED=false
-INSTAGRAM_ACCESS_TOKEN=
-INSTAGRAM_BUSINESS_ACCOUNT_ID=
+INSTAGRAM_ACCESS_TOKEN=your-access-token
+INSTAGRAM_BUSINESS_ACCOUNT_ID=your-account-id
 
 # ============================================================
 # HEALTH MONITORING

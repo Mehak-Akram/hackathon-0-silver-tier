@@ -1,7 +1,7 @@
 # Email Recipient Configuration Update
 
 ## Summary
-Updated all email tasks to send to: **mehakakram089@gmail.com**
+Updated all email tasks to send to: **recipient@example.com**
 
 ## Files Modified
 
@@ -9,21 +9,21 @@ Updated all email tasks to send to: **mehakakram089@gmail.com**
 **Change:** Updated test email recipient
 ```
 - Before: test@example.com
-- After: mehakakram089@gmail.com
+- After: recipient@example.com
 ```
 
 ### 2. Needs_Action/task-001-send-weekly-report.md
 **Change:** Updated weekly report recipient
 ```
 - Before: management@company.com
-- After: mehakakram089@gmail.com
+- After: recipient@example.com
 ```
 
 ### 3. Needs_Action/task-003-q1-stakeholder-update.md
 **Change:** Updated stakeholder update recipient
 ```
 - Before: stakeholders@company.com
-- After: mehakakram089@gmail.com
+- After: recipient@example.com
 ```
 
 ## Architecture Impact
@@ -66,7 +66,7 @@ tags: [email]
 Send email description here.
 
 **Email Details:**
-- To: mehakakram089@gmail.com
+- To: recipient@example.com
 - Subject: Your Subject
 - Body:
 
@@ -80,7 +80,7 @@ Run the reasoning loop to test:
 python reasoning_loop/main.py
 ```
 
-All email tasks will now send to: mehakakram089@gmail.com
+All email tasks will now send to: recipient@example.com
 
 ## Notes
 

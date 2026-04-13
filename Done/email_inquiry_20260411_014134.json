@@ -1,0 +1,13 @@
+{
+  "type": "email_inquiry",
+  "classified_type": "odoo",
+  "content": "Customer inquiry from no-reply@accounts.google.com",
+  "email_subject": "Security alert",
+  "email_body": "[image: Google]\r\nApp password created to sign in to your account\r\n\r\n\r\nmehakakram128@gmail.com\r\nIf you didn't generate this password for hackathon, someone might be using\r\nyour account. Check and secure your account now.\r\nCheck activity\r\n<https://accounts.google.com/AccountChooser?Email=mehakakram128@gmail.com&continue=https://myaccount.google.com/alert/nt/1775853500816?rfn%3D20%26rfnc%3D1%26eid%3D-3977733028288104660%26et%3D0>\r\nYou can also see security activity at\r\nhttps://myaccount.google.com/notifications\r\nYou received this email to let you know about important changes to your\r\nGoogle Account and services.\r\n\u00a9 2026 Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA\r\n",
+  "email_from": "Google <no-reply@accounts.google.com>",
+  "sender_email": "no-reply@accounts.google.com",
+  "customer_email": "no-reply@accounts.google.com",
+  "inquiry_type": "general",
+  "timestamp": "2026-04-11T01:41:34.319013",
+  "requires_response": true
+}

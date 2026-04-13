@@ -1,0 +1,382 @@
+openapi: 3.0.0
+info:
+  title: Email MCP Server API
+  description: Model Context Protocol server for email sending and management
+  version: 1.0.0
+  contact:
+    name: Gold Tier Autonomous AI Employee
+
+servers:
+  - url: http://localhost:8071
+    description: Local Email MCP server
+
+paths:
+  /email/configure:
+    post:
+      summary: Configure SMTP settings
+      description: Set up SMTP server connection for email sending
+      operationId: configureSMTP
+      tags:
+        - Configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - smtp_host
+                - smtp_port
+                - username
+                - password
+              properties:
+                smtp_host:
+                  type: string
+                  description: SMTP server hostname
+                  example: "smtp.gmail.com"
+                smtp_port:
+                  type: integer
+                  description: SMTP server port
+                  example: 587
+                username:
+                  type: string
+                  description: SMTP username/email
+                password:
+                  type: string
+                  format: password
+                  description: SMTP password
+                use_tls:
+                  type: boolean
+                  default: true
+                  description: Use TLS encryption
+      responses:
+        '200':
+          description: Configuration successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "configured"
+                  test_connection:
+                    type: boolean
+                    description: Whether test connection succeeded
+        '400':
+          description: Invalid configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-risk-level: low
+      x-approval-required: false
+
+  /email/send:
+    post:
+      summary: Send email
+      description: Send an email message with optional HTML formatting
+      operationId: sendEmail
+      tags:
+        - Email
+      security:
+        - EmailAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailSendRequest'
+      responses:
+        '200':
+          description: Email sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailSendResponse'
+        '400':
+          description: Invalid email request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: SMTP error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-risk-level: medium
+      x-approval-required: false
+      x-template-validation-required: true
+
+  /email/send_briefing:
+    post:
+      summary: Send CEO briefing email
+      description: Send formatted CEO briefing with HTML template
+      operationId: sendBriefing
+      tags:
+        - Email
+      security:
+        - EmailAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - recipients
+                - briefing_data
+              properties:
+                recipients:
+                  type: array
+                  items:
+                    type: string
+                    format: email
+                  description: Email addresses of recipients
+                briefing_data:
+                  type: object
+                  description: CEO briefing data to render in template
+                  properties:
+                    week_start:
+                      type: string
+                      format: date
+                    week_end:
+                      type: string
+                      format: date
+                    financial_summary:
+                      type: object
+                    marketing_metrics:
+                      type: object
+                    operational_highlights:
+                      type: array
+                      items:
+                        type: string
+                    risk_alerts:
+                      type: array
+                      items:
+                        type: object
+      responses:
+        '200':
+          description: Briefing sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailSendResponse'
+        '400':
+          description: Invalid briefing data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-risk-level: medium
+      x-approval-required: false
+
+  /email/send_notification:
+    post:
+      summary: Send notification email
+      description: Send system notification or alert email
+      operationId: sendNotification
+      tags:
+        - Email
+      security:
+        - EmailAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - recipients
+                - subject
+                - message
+              properties:
+                recipients:
+                  type: array
+                  items:
+                    type: string
+                    format: email
+                subject:
+                  type: string
+                  description: Email subject line
+                message:
+                  type: string
+                  description: Notification message (plain text)
+                severity:
+                  type: string
+                  enum: [low, medium, high]
+                  default: medium
+                  description: Notification severity level
+      responses:
+        '200':
+          description: Notification sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailSendResponse'
+        '400':
+          description: Invalid notification request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-risk-level: medium
+      x-approval-required: false
+
+  /email/validate_template:
+    post:
+      summary: Validate email template
+      description: Validate email template syntax and required fields
+      operationId: validateTemplate
+      tags:
+        - Validation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - template_content
+                - template_data
+              properties:
+                template_content:
+                  type: string
+                  description: Jinja2 template content
+                template_data:
+                  type: object
+                  description: Sample data for template rendering
+      responses:
+        '200':
+          description: Template is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  rendered_preview:
+                    type: string
+                    description: Preview of rendered template
+        '400':
+          description: Template validation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+      x-risk-level: low
+      x-approval-required: false
+
+components:
+  securitySchemes:
+    EmailAuth:
+      type: apiKey
+      in: header
+      name: X-Email-MCP-Key
+      description: Email MCP authentication key
+
+  schemas:
+    EmailSendRequest:
+      type: object
+      required:
+        - recipients
+        - subject
+        - body
+      properties:
+        recipients:
+          type: array
+          items:
+            type: string
+            format: email
+          minItems: 1
+          description: Email addresses of recipients
+        cc:
+          type: array
+          items:
+            type: string
+            format: email
+          description: CC recipients
+        bcc:
+          type: array
+          items:
+            type: string
+            format: email
+          description: BCC recipients
+        subject:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Email subject line
+        body:
+          type: string
+          description: Email body (plain text or HTML)
+        body_html:
+          type: string
+          description: HTML version of email body
+        attachments:
+          type: array
+          items:
+            type: object
+            properties:
+              filename:
+                type: string
+              content_type:
+                type: string
+              data:
+                type: string
+                format: byte
+                description: Base64-encoded attachment data
+        reply_to:
+          type: string
+          format: email
+          description: Reply-to address
+
+    EmailSendResponse:
+      type: object
+      properties:
+        message_id:
+          type: string
+          description: Unique message identifier
+        status:
+          type: string
+          enum: [sent, queued, failed]
+        recipients_accepted:
+          type: array
+          items:
+            type: string
+        recipients_rejected:
+          type: array
+          items:
+            type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        error_code:
+          type: string
+        details:
+          type: object
+
+tags:
+  - name: Configuration
+    description: SMTP configuration operations
+  - name: Email
+    description: Email sending operations
+  - name: Validation
+    description: Template validation operations

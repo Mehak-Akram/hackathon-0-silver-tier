@@ -28,8 +28,8 @@ def test_email_response_generation():
     inquiry = {
         'inquiry_type': 'customer_inquiry',
         'email_subject': 'Product Information Request',
-        'email_from': 'John Doe <john@example.com>',
-        'sender_email': 'john@example.com'
+        'email_from': ' akramabbasi@gmail.com',
+        'sender_email': 'mehakakram128@gmail.com'
     }
 
     response = handler.generate_response(inquiry)

@@ -1,5 +1,7 @@
 # Integration Guide - Email & Social Media
 
+> **⚠️ Integration Status**: Email and social media monitoring features are implemented and tested in development. Production use requires valid API credentials, proper rate limit management, and monitoring for API changes.
+
 ## Overview
 
 Your Gold Tier Autonomous Employee now includes:
@@ -22,13 +24,13 @@ Add to your `.env` file:
 
 ```bash
 # Email Configuration
-EMAIL_ADDRESS=your-email@gmail.com
+EMAIL_ADDRESS=your-email@example.com
 EMAIL_PASSWORD=your-app-password
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 IMAP_HOST=imap.gmail.com
 IMAP_PORT=993
-EMAIL_FROM_NAME=AI Employee
+EMAIL_FROM_NAME=Your Company Name
 ```
 
 ### Gmail Setup

@@ -1,0 +1,14 @@
+{
+  "type": "social_media_mention",
+  "classified_type": "social_media",
+  "platform": "facebook",
+  "content": "Social media mention from John Doe on facebook",
+  "mention_id": "fb_20260411032139",
+  "mention_type": "customer_inquiry",
+  "from_user": "John Doe",
+  "from_user_id": "fb_user_123",
+  "message": "Great product! Can you tell me more about pricing?",
+  "post_id": "fb_post_456",
+  "timestamp": "2026-04-11T03:21:39.306710",
+  "requires_response": true
+}

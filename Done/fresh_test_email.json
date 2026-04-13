@@ -1,0 +1,14 @@
+{
+  "type": "email_inquiry",
+  "classified_type": "odoo",
+  "content": "Customer inquiry from sarah.johnson@example.com",
+  "email_subject": "Demo Request - Enterprise Solution",
+  "email_body": "Hi,\n\nI represent a Fortune 500 company and we are interested in your enterprise solutions.\n\nCan we schedule a demo next week?\n\nRegards,\nSarah Johnson\nCTO, TechCorp Inc.",
+  "email_from": "Sarah Johnson <sarah.johnson@example.com>",
+  "sender_email": "sarah.johnson@example.com",
+  "customer_email": "sarah.johnson@example.com",
+  "inquiry_type": "sales_inquiry",
+  "timestamp": "2026-04-11T01:30:28.179241",
+  "requires_response": true,
+  "message_id": "test-msg-20260411013028"
+}

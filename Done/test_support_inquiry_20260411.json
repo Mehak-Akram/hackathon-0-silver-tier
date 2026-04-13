@@ -1,0 +1,14 @@
+{
+  "type": "email_inquiry",
+  "classified_type": "odoo",
+  "content": "Support request from customer",
+  "email_subject": "Technical Support - Login Issues",
+  "email_body": "Hello Support Team,\n\nI'm experiencing issues logging into my account. I've tried resetting my password twice but still cannot access the system.\n\nError message: \"Invalid credentials\"\n\nMy account email: mike.chen@techstartup.com\nLast successful login: April 8, 2026\n\nThis is urgent as I need to access our project files for a client presentation tomorrow.\n\nPlease help!\n\nBest regards,\nMike Chen\nTechStartup Inc.",
+  "email_from": "Mike Chen <mike.chen@techstartup.com>",
+  "sender_email": "mike.chen@techstartup.com",
+  "customer_email": "mike.chen@techstartup.com",
+  "inquiry_type": "support_request",
+  "timestamp": "2026-04-11T01:40:00",
+  "requires_response": true,
+  "message_id": "test-support-msg-20260411014000"
+}

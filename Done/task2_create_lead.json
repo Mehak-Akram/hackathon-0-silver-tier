@@ -1,0 +1,9 @@
+{
+  "type": "odoo",
+  "classified_type": "odoo",
+  "content": "Create lead for Product Demo Request",
+  "lead_title": "Product Demo Request",
+  "customer_email": "demo@example.com",
+  "description": "Customer interested in product demo via website form",
+  "timestamp": "2026-04-05T00:18:50.314074"
+}

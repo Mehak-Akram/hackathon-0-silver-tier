@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Needs_Action/task-001.md",
+                "file": "SILVER_TIER_COMPLETION_REPORT.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "task-001"
+              "title": "SILVER_TIER_COMPLETION_REPORT"
             }
           }
         ]
@@ -185,17 +185,30 @@
   },
   "active": "7e721ee150e5acf9",
   "lastOpenFiles": [
+    "DOCUMENTATION_AUDIT_REPORT.md",
+    "SILVER_TIER_IMPLEMENTATION_SUMMARY.md",
+    "README_SILVER_TIER.md",
+    "SILVER_TIER_COMPLETION_REPORT.md",
+    "INTEGRATION_GUIDE.md",
+    "GOLD_TIER_AUDIT_REPORT.md",
+    "QUICK_START_PRODUCTION.md",
+    "QUICKSTART.md",
+    "README.md",
+    "SUBMISSION_CHECKLIST.md",
+    "SYSTEM_STATUS.md",
+    "TASK_SCHEDULER_SETUP.md",
+    "Untitled.md",
+    "EMAIL_RECIPIENT_UPDATE_COMPLETE.md",
+    "DEPLOYMENT.md",
+    "Dashboard.md",
     "src/watcher/__pycache__/lock_manager.cpython-312.pyc",
     "src/watcher/__pycache__/file_mover.cpython-312.pyc",
     "src/watcher/__pycache__/config.cpython-312.pyc",
     "src/watcher/__pycache__/__init__.cpython-312.pyc",
     "src/watcher/__pycache__",
     "Needs_Action/task-002.md",
-    "Untitled.md",
     "Needs_Action/task-001.md",
-    "README.md",
     "Welcome.md",
-    "Dashboard.md",
     "history/prompts/001-bronze-tier/004-implement-bronze-tier-system.green.prompt.md",
     "scripts/start-watcher.ps1",
     "src/watcher/watcher.py",
@@ -203,18 +216,10 @@
     "src/watcher/lock_manager.py",
     "src/watcher/file_mover.py",
     "src/watcher/config.py",
-    "src/watcher/__init__.py",
     "Company_Handbook.md",
     "history/prompts/001-bronze-tier/003-generate-bronze-tier-tasks.tasks.prompt.md",
     "specs/001-bronze-tier/tasks.md",
     "history/prompts/001-bronze-tier/002-create-bronze-tier-plan.plan.prompt.md",
-    "specs/001-bronze-tier/quickstart.md",
-    "specs/001-bronze-tier/data-model.md",
-    "specs/001-bronze-tier/research.md",
-    "specs/001-bronze-tier/plan.md",
-    "history/prompts/001-bronze-tier/001-create-bronze-tier-spec.spec.prompt.md",
-    "specs/001-bronze-tier/checklists/requirements.md",
-    "specs/001-bronze-tier/spec.md",
-    "history/prompts/constitution/001-enable-bronze-tier-capabilities.constitution.prompt.md"
+    "specs/001-bronze-tier/quickstart.md"
   ]
 }
