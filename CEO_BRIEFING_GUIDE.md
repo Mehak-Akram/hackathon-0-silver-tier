@@ -2,6 +2,8 @@
 
 Automated weekly executive reports for business intelligence and system monitoring.
 
+> **⚠️ Data Accuracy Note**: The CEO Briefing System aggregates data from audit logs, task files, and Odoo. The accuracy of metrics depends on the completeness and correctness of data in these sources. Verify metrics against source systems for critical business decisions.
+
 ---
 
 ## Overview
@@ -105,7 +107,7 @@ CEO_BRIEFING_EMAIL_ENABLED=true
 CEO_BRIEFING_RECIPIENTS=ceo@example.com,cfo@example.com,board@example.com
 
 # Email credentials (same as system email)
-EMAIL_ADDRESS=your-email@gmail.com
+EMAIL_ADDRESS=your-email@example.com
 EMAIL_PASSWORD=your-app-password
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587

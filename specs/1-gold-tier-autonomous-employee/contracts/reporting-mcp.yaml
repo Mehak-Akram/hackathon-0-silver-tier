@@ -1,0 +1,441 @@
+openapi: 3.0.0
+info:
+  title: Reporting MCP Server API
+  description: Model Context Protocol server for CEO briefing generation and report compilation
+  version: 1.0.0
+  contact:
+    name: Gold Tier Autonomous AI Employee
+
+servers:
+  - url: http://localhost:8072
+    description: Local Reporting MCP server
+
+paths:
+  /reporting/ceo-briefing:
+    post:
+      summary: Generate CEO briefing
+      description: Compile comprehensive weekly CEO briefing from multiple data sources
+      operationId: generateCEOBriefing
+      tags:
+        - CEO Briefing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CEOBriefingRequest'
+      responses:
+        '200':
+          description: Briefing generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CEOBriefingResponse'
+        '206':
+          description: Partial briefing (some data sources unavailable)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CEOBriefingResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-risk-level: low
+      x-approval-required: false
+
+  /reporting/financial-report:
+    post:
+      summary: Generate financial report
+      description: Compile detailed financial report with P&L, balance sheet, and trends
+      operationId: generateFinancialReport
+      tags:
+        - Financial Reports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - start_date
+                - end_date
+              properties:
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                include_charts:
+                  type: boolean
+                  default: false
+                  description: Include data visualization charts
+      responses:
+        '200':
+          description: Financial report generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialReportResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-risk-level: low
+      x-approval-required: false
+
+  /reporting/marketing-report:
+    post:
+      summary: Generate marketing performance report
+      description: Compile marketing metrics and campaign performance across platforms
+      operationId: generateMarketingReport
+      tags:
+        - Marketing Reports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - start_date
+                - end_date
+              properties:
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                platforms:
+                  type: array
+                  items:
+                    type: string
+                    enum: [facebook, instagram, twitter, all]
+                  default: [all]
+      responses:
+        '200':
+          description: Marketing report generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingReportResponse'
+        '206':
+          description: Partial report (some platforms unavailable)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingReportResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-risk-level: low
+      x-approval-required: false
+
+  /reporting/audit-report:
+    post:
+      summary: Generate audit log report
+      description: Compile audit log summary with error analysis and system health
+      operationId: generateAuditReport
+      tags:
+        - Audit Reports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - start_date
+                - end_date
+              properties:
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                severity_filter:
+                  type: array
+                  items:
+                    type: string
+                    enum: [low, medium, high]
+                  default: [low, medium, high]
+      responses:
+        '200':
+          description: Audit report generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditReportResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-risk-level: low
+      x-approval-required: false
+
+  /reporting/data-sources/status:
+    get:
+      summary: Check data source availability
+      description: Get status of all data sources (Social, Email MCPs)
+      operationId: getDataSourceStatus
+      tags:
+        - System
+      responses:
+        '200':
+          description: Data source status retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  social_mcp:
+                    $ref: '#/components/schemas/DataSourceStatus'
+                  email_mcp:
+                    $ref: '#/components/schemas/DataSourceStatus'
+                  task_files:
+                    $ref: '#/components/schemas/DataSourceStatus'
+      x-risk-level: low
+      x-approval-required: false
+
+components:
+  schemas:
+    CEOBriefingRequest:
+      type: object
+      required:
+        - week_start
+        - week_end
+      properties:
+        week_start:
+          type: string
+          format: date
+          description: Start of reporting week (Monday)
+        week_end:
+          type: string
+          format: date
+          description: End of reporting week (Sunday)
+        recipients:
+          type: array
+          items:
+            type: string
+            format: email
+          description: Email addresses for delivery
+        include_sections:
+          type: array
+          items:
+            type: string
+            enum: [financial, marketing, operational, risks]
+          default: [financial, marketing, operational, risks]
+          description: Sections to include in briefing
+
+    CEOBriefingResponse:
+      type: object
+      properties:
+        briefing_id:
+          type: string
+          description: Unique briefing identifier
+        generation_date:
+          type: string
+          format: date-time
+        week_start:
+          type: string
+          format: date
+        week_end:
+          type: string
+          format: date
+        content:
+          type: object
+          properties:
+            executive_summary:
+              type: string
+              description: High-level summary (1-2 paragraphs)
+            financial_summary:
+              type: object
+              properties:
+                total_revenue:
+                  type: number
+                  format: float
+                total_expenses:
+                  type: number
+                  format: float
+                net_income:
+                  type: number
+                  format: float
+                revenue_trend:
+                  type: string
+                  enum: [up, down, stable]
+                top_revenue_sources:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      category:
+                        type: string
+                      amount:
+                        type: number
+            marketing_metrics:
+              type: object
+              properties:
+                total_engagement:
+                  type: integer
+                total_reach:
+                  type: integer
+                follower_growth:
+                  type: integer
+                engagement_trend:
+                  type: string
+                  enum: [up, down, stable]
+                top_posts:
+                  type: array
+                  items:
+                    type: object
+            operational_highlights:
+              type: array
+              items:
+                type: string
+            risk_alerts:
+              type: array
+              items:
+                type: object
+                properties:
+                  severity:
+                    type: string
+                    enum: [low, medium, high]
+                  category:
+                    type: string
+                  description:
+                    type: string
+                  action_required:
+                    type: string
+        missing_data:
+          type: array
+          items:
+            type: string
+          description: Data sources that were unavailable
+        file_path:
+          type: string
+          description: Path to generated briefing markdown file
+
+    FinancialReportResponse:
+      type: object
+      properties:
+        report_id:
+          type: string
+        generation_date:
+          type: string
+          format: date-time
+        period_start:
+          type: string
+          format: date
+        period_end:
+          type: string
+          format: date
+        profit_loss:
+          type: object
+        balance_sheet:
+          type: object
+        trends:
+          type: object
+        file_path:
+          type: string
+
+    MarketingReportResponse:
+      type: object
+      properties:
+        report_id:
+          type: string
+        generation_date:
+          type: string
+          format: date-time
+        period_start:
+          type: string
+          format: date
+        period_end:
+          type: string
+          format: date
+        platform_metrics:
+          type: object
+        top_content:
+          type: array
+        engagement_analysis:
+          type: object
+        missing_platforms:
+          type: array
+          items:
+            type: string
+        file_path:
+          type: string
+
+    AuditReportResponse:
+      type: object
+      properties:
+        report_id:
+          type: string
+        generation_date:
+          type: string
+          format: date-time
+        period_start:
+          type: string
+          format: date
+        period_end:
+          type: string
+          format: date
+        total_actions:
+          type: integer
+        actions_by_risk_level:
+          type: object
+        error_summary:
+          type: object
+        circuit_breaker_events:
+          type: array
+        system_health:
+          type: object
+        file_path:
+          type: string
+
+    DataSourceStatus:
+      type: object
+      properties:
+        available:
+          type: boolean
+        last_check:
+          type: string
+          format: date-time
+        error_message:
+          type: string
+        circuit_breaker_state:
+          type: string
+          enum: [closed, open, half_open]
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        error_code:
+          type: string
+        details:
+          type: object
+
+tags:
+  - name: CEO Briefing
+    description: CEO briefing generation operations
+  - name: Financial Reports
+    description: Financial reporting operations
+  - name: Marketing Reports
+    description: Marketing reporting operations
+  - name: Audit Reports
+    description: Audit and system health reporting
+  - name: System
+    description: System status and health checks

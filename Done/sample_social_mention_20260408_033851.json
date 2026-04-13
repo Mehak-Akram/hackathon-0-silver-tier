@@ -1,0 +1,14 @@
+{
+  "type": "social_media_mention",
+  "classified_type": "social_media",
+  "platform": "facebook",
+  "content": "Social media mention from sample customer on facebook",
+  "mention_id": "fb_sample_123",
+  "mention_type": "customer_inquiry",
+  "from_user": "Sample Customer",
+  "from_user_id": "fb_user_sample",
+  "message": "Hi! I saw your post and I am interested in learning more about your services.",
+  "post_id": "fb_post_sample",
+  "timestamp": "2026-04-08T03:38:51.619049",
+  "requires_response": true
+}

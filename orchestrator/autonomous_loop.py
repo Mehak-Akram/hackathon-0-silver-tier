@@ -91,6 +91,12 @@ class AutonomousLoop:
                     severity='warning'
                 )
 
+        # CEO Briefing configuration
+        self.ceo_briefing_enabled = os.getenv('CEO_BRIEFING_EMAIL_ENABLED', 'false').lower() == 'true'
+        self.ceo_briefing_day = os.getenv('CEO_BRIEFING_DAY', 'monday').lower()
+        self.ceo_briefing_hour = int(os.getenv('CEO_BRIEFING_HOUR', '8'))
+        self.last_briefing_date = None
+
         # Setup signal handlers for graceful shutdown
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
@@ -204,6 +210,61 @@ class AutonomousLoop:
 
         return processed_count
 
+    def check_and_generate_ceo_briefing(self) -> bool:
+        """
+        Check if it's time to generate CEO briefing and generate if needed
+
+        Returns:
+            True if briefing was generated
+        """
+        if not self.ceo_briefing_enabled:
+            return False
+
+        now = datetime.now()
+        current_date = now.date()
+
+        # Check if already generated today
+        if self.last_briefing_date == current_date:
+            return False
+
+        # Check if it's the right day of week
+        day_map = {
+            'monday': 0, 'tuesday': 1, 'wednesday': 2, 'thursday': 3,
+            'friday': 4, 'saturday': 5, 'sunday': 6
+        }
+        target_day = day_map.get(self.ceo_briefing_day, 0)
+
+        if now.weekday() != target_day:
+            return False
+
+        # Check if it's the right hour (or later)
+        if now.hour < self.ceo_briefing_hour:
+            return False
+
+        # Generate briefing
+        try:
+            print(f"\n[CEO Briefing] Generating weekly briefing...")
+
+            from reporting.scheduled_briefing import generate_and_send_briefing
+            result = generate_and_send_briefing()
+
+            if result == 0:
+                print(f"[CEO Briefing] ✓ Successfully generated and sent")
+                self.last_briefing_date = current_date
+                return True
+            else:
+                print(f"[CEO Briefing] ✗ Generation failed")
+                return False
+
+        except Exception as e:
+            self.audit_logger.log_event(
+                event_type='ceo_briefing_generation_error',
+                details={'error': str(e)},
+                severity='error'
+            )
+            print(f"[CEO Briefing] Error: {e}")
+            return False
+
     def run_iteration(self) -> dict:
         """
         Run a single iteration of the loop
@@ -219,10 +280,23 @@ class AutonomousLoop:
             'social_mentions_checked': 0,
             'inbox_processed': 0,
             'needs_action_processed': 0,
+            'ceo_briefing_generated': False,
             'errors': 0
         }
 
         try:
+            # Step 0: Check if CEO briefing should be generated
+            if self.ceo_briefing_enabled:
+                try:
+                    briefing_generated = self.check_and_generate_ceo_briefing()
+                    stats['ceo_briefing_generated'] = briefing_generated
+                except Exception as e:
+                    self.audit_logger.log_event(
+                        event_type='ceo_briefing_check_error',
+                        details={'error': str(e)},
+                        severity='warning'
+                    )
+
             # Step 1: Check for new emails (if email monitor is enabled)
             if self.email_monitor:
                 try:

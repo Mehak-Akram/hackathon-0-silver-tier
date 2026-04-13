@@ -1,0 +1,14 @@
+{
+  "type": "email_inquiry",
+  "classified_type": "odoo",
+  "content": "Test inquiry for Gmail integration verification",
+  "email_subject": "Test - Gmail Integration Verification",
+  "email_body": "Hello,\n\nThis is a test email to verify that the autonomous AI employee system is correctly:\n1. Processing email inquiries from Inbox\n2. Creating customers and leads in Odoo\n3. Sending automated email responses via Gmail\n\nIf you receive an automated response to this email, the system is working correctly.\n\nTest timestamp: 2026-04-11 01:45:00\n\nBest regards,\nSystem Administrator",
+  "email_from": "Akram Abbasi <akramabbasi019@gmail.com>",
+  "sender_email": "akramabbasi019@gmail.com",
+  "customer_email": "akramabbasi019@gmail.com",
+  "inquiry_type": "general_inquiry",
+  "timestamp": "2026-04-11T01:45:00",
+  "requires_response": true,
+  "message_id": "test-gmail-integration-20260411014500"
+}

@@ -1,0 +1,9 @@
+{
+  "type": "odoo",
+  "classified_type": "odoo",
+  "content": "Create customer John Smith with email john@example.com",
+  "customer_name": "John Smith",
+  "customer_email": "john@example.com",
+  "customer_phone": "+1234567890",
+  "timestamp": "2026-04-05T00:19:56.872397"
+}

@@ -1,0 +1,616 @@
+openapi: 3.0.0
+info:
+  title: Social Media MCP Server API
+  description: Model Context Protocol server for Facebook, Instagram, and Twitter integration
+  version: 1.0.0
+  contact:
+    name: Gold Tier Autonomous AI Employee
+
+servers:
+  - url: http://localhost:8070
+    description: Local Social Media MCP server
+
+paths:
+  /facebook/authenticate:
+    post:
+      summary: Authenticate with Facebook Graph API
+      description: Validate and store Facebook OAuth2 access token
+      operationId: authenticateFacebook
+      tags:
+        - Facebook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - access_token
+              properties:
+                access_token:
+                  type: string
+                  description: Facebook OAuth2 access token
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page_id:
+                    type: string
+                  page_name:
+                    type: string
+                  token_expires_at:
+                    type: string
+                    format: date-time
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-risk-level: low
+      x-approval-required: false
+
+  /facebook/insights:
+    get:
+      summary: Fetch Facebook page insights
+      description: Retrieve engagement metrics for Facebook page
+      operationId: getFacebookInsights
+      tags:
+        - Facebook
+      security:
+        - FacebookAuth: []
+      parameters:
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: Start date for metrics
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: End date for metrics
+      responses:
+        '200':
+          description: Insights retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacebookInsights'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+      x-risk-level: low
+      x-approval-required: false
+
+  /facebook/posts:
+    get:
+      summary: Fetch Facebook posts
+      description: Retrieve posts with engagement metrics
+      operationId: getFacebookPosts
+      tags:
+        - Facebook
+      security:
+        - FacebookAuth: []
+      parameters:
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 25
+            maximum: 100
+      responses:
+        '200':
+          description: Posts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SocialPost'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+      x-risk-level: low
+      x-approval-required: false
+
+  /instagram/authenticate:
+    post:
+      summary: Authenticate with Instagram Graph API
+      description: Validate and store Instagram OAuth2 access token
+      operationId: authenticateInstagram
+      tags:
+        - Instagram
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - access_token
+              properties:
+                access_token:
+                  type: string
+                  description: Instagram OAuth2 access token
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account_id:
+                    type: string
+                  username:
+                    type: string
+                  token_expires_at:
+                    type: string
+                    format: date-time
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-risk-level: low
+      x-approval-required: false
+
+  /instagram/insights:
+    get:
+      summary: Fetch Instagram account insights
+      description: Retrieve engagement metrics for Instagram Business account
+      operationId: getInstagramInsights
+      tags:
+        - Instagram
+      security:
+        - InstagramAuth: []
+      parameters:
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Insights retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstagramInsights'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+      x-risk-level: low
+      x-approval-required: false
+
+  /instagram/media:
+    get:
+      summary: Fetch Instagram media
+      description: Retrieve media posts with engagement metrics
+      operationId: getInstagramMedia
+      tags:
+        - Instagram
+      security:
+        - InstagramAuth: []
+      parameters:
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 25
+            maximum: 100
+      responses:
+        '200':
+          description: Media retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  media:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SocialPost'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+      x-risk-level: low
+      x-approval-required: false
+
+  /twitter/authenticate:
+    post:
+      summary: Authenticate with Twitter API v2
+      description: Validate and store Twitter OAuth 2.0 credentials
+      operationId: authenticateTwitter
+      tags:
+        - Twitter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - api_key
+                - api_secret
+                - access_token
+                - access_token_secret
+              properties:
+                api_key:
+                  type: string
+                api_secret:
+                  type: string
+                access_token:
+                  type: string
+                access_token_secret:
+                  type: string
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: string
+                  username:
+                    type: string
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-risk-level: low
+      x-approval-required: false
+
+  /twitter/metrics:
+    get:
+      summary: Fetch Twitter metrics
+      description: Retrieve tweet metrics for authenticated user
+      operationId: getTwitterMetrics
+      tags:
+        - Twitter
+      security:
+        - TwitterAuth: []
+      parameters:
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TwitterMetrics'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+      x-risk-level: low
+      x-approval-required: false
+
+  /twitter/tweets:
+    get:
+      summary: Fetch tweets
+      description: Retrieve tweets with engagement metrics
+      operationId: getTwitterTweets
+      tags:
+        - Twitter
+      security:
+        - TwitterAuth: []
+      parameters:
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 25
+            maximum: 100
+      responses:
+        '200':
+          description: Tweets retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tweets:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SocialPost'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+      x-risk-level: low
+      x-approval-required: false
+
+  /social/summary:
+    post:
+      summary: Generate weekly social media summary
+      description: Aggregate metrics across all platforms and generate summary
+      operationId: generateWeeklySummary
+      tags:
+        - Reporting
+      security:
+        - FacebookAuth: []
+        - InstagramAuth: []
+        - TwitterAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - start_date
+                - end_date
+              properties:
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+      responses:
+        '200':
+          description: Summary generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeeklySocialSummary'
+        '206':
+          description: Partial summary (some platforms unavailable)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeeklySocialSummary'
+      x-risk-level: low
+      x-approval-required: false
+
+components:
+  securitySchemes:
+    FacebookAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth2
+    InstagramAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth2
+    TwitterAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth2
+
+  schemas:
+    SocialPost:
+      type: object
+      properties:
+        id:
+          type: string
+        platform:
+          type: string
+          enum: [facebook, instagram, twitter]
+        platform_post_id:
+          type: string
+        post_date:
+          type: string
+          format: date-time
+        content:
+          type: string
+        media_urls:
+          type: array
+          items:
+            type: string
+        engagement:
+          type: object
+          properties:
+            likes:
+              type: integer
+            shares:
+              type: integer
+            comments:
+              type: integer
+            reach:
+              type: integer
+            impressions:
+              type: integer
+            engagement_rate:
+              type: number
+              format: float
+        performance_score:
+          type: number
+          format: float
+        is_anomaly:
+          type: boolean
+
+    FacebookInsights:
+      type: object
+      properties:
+        page_impressions:
+          type: integer
+        page_reach:
+          type: integer
+        page_engagement:
+          type: integer
+        page_followers:
+          type: integer
+        follower_growth:
+          type: integer
+
+    InstagramInsights:
+      type: object
+      properties:
+        impressions:
+          type: integer
+        reach:
+          type: integer
+        profile_views:
+          type: integer
+        followers:
+          type: integer
+        follower_growth:
+          type: integer
+
+    TwitterMetrics:
+      type: object
+      properties:
+        impressions:
+          type: integer
+        engagements:
+          type: integer
+        followers:
+          type: integer
+        follower_growth:
+          type: integer
+
+    WeeklySocialSummary:
+      type: object
+      properties:
+        period_start:
+          type: string
+          format: date
+        period_end:
+          type: string
+          format: date
+        total_engagement:
+          type: integer
+        total_reach:
+          type: integer
+        follower_growth:
+          type: integer
+        top_posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialPost'
+        engagement_trend:
+          type: string
+          enum: [up, down, stable]
+        platforms_available:
+          type: array
+          items:
+            type: string
+            enum: [facebook, instagram, twitter]
+        platforms_unavailable:
+          type: array
+          items:
+            type: string
+
+    RateLimitError:
+      type: object
+      properties:
+        error:
+          type: string
+        retry_after:
+          type: integer
+          description: Seconds until rate limit resets
+        limit:
+          type: integer
+          description: Rate limit threshold
+        remaining:
+          type: integer
+          description: Remaining requests
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        error_code:
+          type: string
+        details:
+          type: object
+
+tags:
+  - name: Facebook
+    description: Facebook Graph API operations
+  - name: Instagram
+    description: Instagram Graph API operations
+  - name: Twitter
+    description: Twitter API v2 operations
+  - name: Reporting
+    description: Cross-platform reporting operations

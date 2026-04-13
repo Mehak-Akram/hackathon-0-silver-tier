@@ -1,5 +1,7 @@
 # Gold Tier Autonomous Employee - Quick Start Guide
 
+> **⚠️ System Status**: This is a Gold Tier implementation with email monitoring, social media integration, Odoo CRM, and automated reporting. Many features require proper API credentials and configuration. Test in development mode before production use.
+
 ## 🎉 Congratulations! Your Autonomous Employee is Ready
 
 You've successfully built a fully autonomous AI employee that can:
@@ -100,8 +102,8 @@ LOOP_INTERVAL_SECONDS=60
 # Odoo connection
 ODOO_URL=http://localhost:8069
 ODOO_DB=odoo_db
-ODOO_USERNAME=mehakakram128@gmail.com
-ODOO_PASSWORD=odoo
+ODOO_USERNAME=your-email@example.com
+ODOO_PASSWORD=your-secure-password
 ```
 
 ---

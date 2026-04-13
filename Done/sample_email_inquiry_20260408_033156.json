@@ -1,0 +1,13 @@
+{
+  "type": "email_inquiry",
+  "classified_type": "odoo",
+  "content": "Customer inquiry from sample@example.com",
+  "email_subject": "Product Information Request",
+  "email_body": "Hello, I am interested in learning more about your products. Could you please send me more information?",
+  "email_from": "Sample Customer <sample@example.com>",
+  "sender_email": "sample@example.com",
+  "customer_email": "sample@example.com",
+  "inquiry_type": "customer_inquiry",
+  "timestamp": "2026-04-08T03:31:56.922387",
+  "requires_response": false
+}
